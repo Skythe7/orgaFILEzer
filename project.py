@@ -27,7 +27,8 @@ def main():
                 case "inspect":
                     archive_inspector(path)
                 case "analyze":
-                    project_analyzer(path)
+                    folder_analyzer(path)
+                
         except FileNotFoundError:
             sys.exit("File or folder does not exist!")
 
@@ -35,7 +36,7 @@ def main():
 def menu():
     try:
         print("1. Folder Organizer")
-        print("2. Project Analyzer")
+        print("2. Folder Analyzer")
         print("3. Archive Inspector")
         user_choice = int(input("Options (1-3): "))
 
@@ -45,14 +46,14 @@ def menu():
             case 1:
                 folder_organizer(path)
             case 2:
-                project_analyzer(path)
+                folder_analyzer(path)
             case 3:
                 archive_inspector(path)
             case _:
                 sys.exit("Invalid options!")
         
     except ValueError:
-        sys.exit("Please insert a number!")
+        sys.exit("Please insert a type according to the prompt!")
     except FileNotFoundError:
         sys.exit("File or folder does not exist!")
   
@@ -60,13 +61,51 @@ def menu():
 def folder_organizer(path: Path):
     for file in path.iterdir():
         if file.is_file():
-            target_dir = path / f"{file.suffix.removeprefix(".")} files"
+            target_dir = path / f"{file.suffix.upper().removeprefix(".")} files"
             print(target_dir)
             target_dir.mkdir(exist_ok=True)
             shutil.move(file, target_dir)
 
-def project_analyzer(path: Path):
-    ...
+
+def folder_analyzer(path: Path):
+    statistic = {
+        "total_files": 0,
+        "total_folders": 0,
+        "oldest_file": "",
+        "newest_file": "",
+        "total_size": 0,
+        "largest_file": "",
+        "smallest_file": ""
+    }
+    file_time = {}
+    file_size = {}
+
+    for file in path.rglob("*"):
+        if file.is_file():
+            statistic["total_files"] += 1
+            statistic["total_size"] += file.stat().st_size
+            file_time[file.relative_to(path)] = datetime.datetime.fromtimestamp(file.stat().st_mtime)
+            file_size[file.relative_to(path)] = file.stat().st_size
+    
+    for folder in path.rglob("*"):
+        if folder.is_dir():
+            statistic["total_folders"] += 1
+
+    statistic["oldest_file"] = min(file_time, key=file_time.get)
+    statistic["newest_file"] = max(file_time, key=file_time.get)
+    statistic["largest_file"] = max(file_size, key=file_time.get)
+    statistic["smallest_file"] = min(file_size, key=file_time.get)
+
+    print()
+    print("=======================================================================")
+    print(f"Total files: \n{statistic["total_files"]}")
+    print(f"Total folders: \n{statistic["total_folders"]}")
+    print(f"Oldest file: \n{statistic["oldest_file"]}")
+    print(f"Newest file: \n{statistic["newest_file"]}")
+    print(f"Total size: \n{statistic["total_size"]}")
+    print(f"Largest file: \n{statistic["largest_file"]}")
+    print(f"Smallest file: \n{statistic["smallest_file"]}")
+    print("=======================================================================")
 
 
 def archive_inspector(path: Path):
