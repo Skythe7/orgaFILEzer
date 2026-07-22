@@ -1,7 +1,7 @@
 from pathlib import Path
 import shutil
 import datetime
-import zipfile
+from zipfile import ZipFile
 import argparse
 import sys
 
@@ -109,7 +109,17 @@ def folder_analyzer(path: Path):
 
 
 def archive_inspector(path: Path):
-    ...
+    try:
+        with ZipFile(path) as file:
+            print()
+            print("==================================")
+            print(f"Name: {file.filename}")
+            print(f"File in archive:")
+            for f in file.infolist():
+                print(f"{f.filename}: {f.file_size}")
+            print("==================================")
+    except IsADirectoryError:
+        sys.exit("Please enter zip file")
 
 
 def convert_to_path(path_string):
