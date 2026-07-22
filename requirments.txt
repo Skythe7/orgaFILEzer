@@ -1,0 +1,6 @@
+pytest
+pathlib
+shutil
+datetime
+zipfile
+argparse
