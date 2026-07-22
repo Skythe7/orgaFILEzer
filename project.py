@@ -67,6 +67,9 @@ def folder_organizer(path: Path):
             print(target_dir)
             target_dir.mkdir(exist_ok=True)
             shutil.move(file, target_dir)
+    
+    print()
+    print("Success!")
 
 
 def folder_analyzer(path: Path):
