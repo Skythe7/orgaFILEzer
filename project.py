@@ -4,6 +4,8 @@ import datetime
 from zipfile import ZipFile
 import argparse
 import sys
+import humanize
+import rich
 
 
 parser = argparse.ArgumentParser(description="Organize, inspect, and analyze your filesystem!")
@@ -98,13 +100,13 @@ def folder_analyzer(path: Path):
 
     print()
     print("=======================================================================")
-    print(f"Total files: \n{statistic["total_files"]}")
-    print(f"Total folders: \n{statistic["total_folders"]}")
-    print(f"Oldest file: \n{statistic["oldest_file"]}")
-    print(f"Newest file: \n{statistic["newest_file"]}")
-    print(f"Total size: \n{statistic["total_size"]}")
-    print(f"Largest file: \n{statistic["largest_file"]}")
-    print(f"Smallest file: \n{statistic["smallest_file"]}")
+    print(f"Total files: {humanize.intcomma(statistic["total_files"])}")
+    print(f"Total folders: {humanize.intcomma(statistic["total_folders"])}")
+    print(f"Oldest file: {statistic["oldest_file"]}")
+    print(f"Newest file: {statistic["newest_file"]}")
+    print(f"Total size: {humanize.naturalsize(statistic["total_size"])}")
+    print(f"Largest file: {statistic["largest_file"]}")
+    print(f"Smallest file: {statistic["smallest_file"]}")
     print("=======================================================================")
 
 
@@ -116,8 +118,9 @@ def archive_inspector(path: Path):
             print(f"Name: {file.filename}")
             print(f"File in archive:")
             for f in file.infolist():
-                print(f"{f.filename}: {f.file_size}")
+                print(f"{f.filename}: {humanize.naturalsize(f.file_size)}")
             print("==================================")
+
     except IsADirectoryError:
         sys.exit("Please enter zip file")
 

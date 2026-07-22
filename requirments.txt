@@ -5,3 +5,5 @@ datetime
 zipfile
 sys
 argparse
+humanize
+rich
