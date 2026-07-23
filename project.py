@@ -5,7 +5,8 @@ from zipfile import ZipFile
 import argparse
 import sys
 import humanize
-import rich
+from rich.console import Console
+from rich.table import Table
 
 
 parser = argparse.ArgumentParser(description="Organize, inspect, and analyze your filesystem!")
@@ -14,6 +15,9 @@ parser.add_argument("options", choices=["organize", "inspect", "analyze"], nargs
 parser.add_argument("path", nargs='?')
 
 args = parser.parse_args()
+
+
+console = Console()
 
 
 def main():
@@ -37,9 +41,13 @@ def main():
 
 def menu():
     try:
-        print("1. Folder Organizer")
-        print("2. Folder Analyzer")
-        print("3. Archive Inspector")
+        table = Table(title="OrgaFILEzer Menu")
+        table.add_column("Options", style="bold")
+        table.add_row("1. Folder Organizer")
+        table.add_row("2. Folder Analyzer")
+        table.add_row("3. Archive Inspector")
+        console.print(table)
+
         user_choice = int(input("Options (1-3): "))
 
         path = convert_to_path(input("Folder/file path: "))
@@ -64,12 +72,11 @@ def folder_organizer(path: Path):
     for file in path.iterdir():
         if file.is_file():
             target_dir = path / f"{file.suffix.upper().removeprefix(".")} files"
-            print(target_dir)
             target_dir.mkdir(exist_ok=True)
             shutil.move(file, target_dir)
     
     print()
-    print("Success!")
+    console.print("Success!", style="bold green")
 
 
 def folder_analyzer(path: Path):
@@ -101,28 +108,31 @@ def folder_analyzer(path: Path):
     statistic["largest_file"] = max(file_size, key=file_time.get)
     statistic["smallest_file"] = min(file_size, key=file_time.get)
 
-    print()
-    print("=======================================================================")
-    print(f"Total files: {humanize.intcomma(statistic["total_files"])}")
-    print(f"Total folders: {humanize.intcomma(statistic["total_folders"])}")
-    print(f"Oldest file: {statistic["oldest_file"]}")
-    print(f"Newest file: {statistic["newest_file"]}")
-    print(f"Total size: {humanize.naturalsize(statistic["total_size"])}")
-    print(f"Largest file: {statistic["largest_file"]}")
-    print(f"Smallest file: {statistic["smallest_file"]}")
-    print("=======================================================================")
+    table = Table(title="Folder Analyzer")
+    table.add_column("List", style="bold")
+    table.add_column("Value")
+    table.add_row("Total files", humanize.intcomma(statistic["total_files"]))
+    table.add_row("Total folders:", humanize.intcomma(statistic["total_folders"]))
+    table.add_row("Oldest file:", str(statistic["oldest_file"]))
+    table.add_row("Newest file:", str(statistic["newest_file"]))
+    table.add_row("Total size:", humanize.naturalsize(statistic["total_size"]))
+    table.add_row("Largest file:", str(statistic["largest_file"]))
+    table.add_row("Smallest file:", str(statistic["smallest_file"]))
+
+    console.print(table)
 
 
 def archive_inspector(path: Path):
     try:
         with ZipFile(path) as file:
             print()
-            print("==================================")
-            print(f"Name: {file.filename}")
-            print(f"File in archive:")
+            table = Table(title="Archive Inspector")
+            table.add_column("File Member Name", style="bold")
+            table.add_column("Size")
             for f in file.infolist():
-                print(f"{f.filename}: {humanize.naturalsize(f.file_size)}")
-            print("==================================")
+                table.add_row(f.filename, humanize.naturalsize(f.file_size))
+            
+            console.print(table)
 
     except IsADirectoryError:
         sys.exit("Please enter zip file")
