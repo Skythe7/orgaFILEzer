@@ -9,18 +9,17 @@ from rich.console import Console
 from rich.table import Table
 
 
-parser = argparse.ArgumentParser(description="Organize, inspect, and analyze your filesystem!")
-
-parser.add_argument("options", choices=["organize", "inspect", "analyze"], nargs='?')
-parser.add_argument("path", nargs='?')
-
-args = parser.parse_args()
-
-
 console = Console()
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Organize, inspect, and analyze your filesystem!")
+
+    parser.add_argument("options", choices=["organize", "inspect", "analyze"], nargs='?')
+    parser.add_argument("path", nargs='?')
+
+    args = parser.parse_args()
+
     if len(sys.argv) == 1:
         menu()
     else:
