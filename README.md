@@ -53,6 +53,6 @@ options:
 - Scans the folders
 - Find information about all the files in that folder
 - Output all the reports
-### Archive Explainer
+### Archive Inspector
 - Get into the archive file.
 - Output the informations (folders, files, etc)
