@@ -26,6 +26,10 @@ It should output a table of menu:
 └──────────────────────┘
 ```
 Choose an option with their corresponding number. And input your file/folder path
+
+> [!NOTE]
+> The paths are RELATIVE TO THE HOME path. Ex: /home/user/Downloads, input "Downloads"
+
 ### With arguments
 ```
 python project.py -h
@@ -43,6 +47,10 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
 ```
+
+> [!NOTE]
+> The paths are RELATIVE TO THE HOME path. Ex: /home/user/Downloads, input "Downloads"
+
 ## Features
 ### Folder Organizer
 - Scans the whole folder
