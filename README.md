@@ -1,5 +1,5 @@
 # orgaFILEzer
-#### Video demo: TODO
+#### Video demo: https://youtu.be/xi2f3LpEJuk
 ## What is orgaFILEzer?
 OrgaFILEzer is simply a CLI program that can be used to analyze, or even organize your file system!
 ## Why would I need this?
